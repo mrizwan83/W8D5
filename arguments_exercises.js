@@ -33,6 +33,8 @@ Function.prototype.myBind = function (ctx, ...bindArgs) { //says, ctx=pavlov, bi
   }
 };
 
+
+
 class Cat {
   constructor(name) {
     this.name = name;
@@ -49,6 +51,8 @@ class Dog {
     this.name = name;
   }
 }
+
+markov.says.apply(pavlov)
 
 const markov = new Cat("Markov");
 const pavlov = new Dog("Pavlov");
@@ -110,7 +114,7 @@ function curriedSum(numArgs) {
 
 
 ///es6 syntax (mycurry supposed to do the same thing as .curry)
-Function.prototype.curry1 = function (numArgs) {
+Function.prototype.myCurry1 = function (numArgs) {
   const arr = [];
   const _curryFn = (arg) => {
     arr.push(arg);
@@ -132,14 +136,14 @@ function sumThree(num1, num2, num3) {
 
 
 // apply
-Function.prototype.curry2 = function (numArgs) {
+Function.prototype.myCurry2 = function (numArgs) {
   const arr = [];
   let that = this
    function _curryFn(arg){
     arr.push(arg);
 
     if (arr.length === numArgs) {
-      return that.apply(null, arr);
+      return that.call(null, ...arr);
     }
     else {
       return _curryFn;
@@ -167,4 +171,17 @@ Function.prototype.myCurry3 = function (numArgs) {
     return _curryFn;
 }
 
+function sumThree(num1, num2, num3) {
+  return num1 + num2 + num3;
+}
 
+sumThree(4, 20, 6); // == 30
+
+// you'll write `Function#curry`!
+let f1 = sumThree.myCurry2(3); // tells `f1` to wait until 3 arguments are given before running `sumThree`
+f1 = f1(4); // [Function]
+f1 = f1(20); // [Function]
+f1 = f1(6); // = 30
+
+// // or more briefly:
+console.log(sumThree.myCurry2(3)(4)(20)(6)); // == 30
